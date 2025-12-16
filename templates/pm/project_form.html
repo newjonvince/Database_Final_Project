@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PM - {{ 'Add' if mode=='add' else 'Edit' }} Project</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    label { display:block; margin-top:10px; }
+    input, select { width: 420px; padding: 6px; }
+    .msg { padding: 10px; margin: 10px 0; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+<h1>PM: {{ 'Add' if mode=='add' else 'Edit' }} Project</h1>
+<p><a href="{{ url_for('pm_projects_list') }}">← Back to Projects</a></p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="msg">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<form method="post">
+  <label>Client</label>
+  <select name="client_id" required>
+    {% for c in clients %}
+      <option value="{{ c.client_id }}"
+        {% if project and project.client_id == c.client_id %}selected{% endif %}>
+        {{ c.client_name }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <label>Project Code</label>
+  <input name="project_code" required value="{{ project.project_code if project else '' }}">
+
+  <label>Project Name</label>
+  <input name="project_name" required value="{{ project.project_name if project else '' }}">
+
+  <label>Start Date</label>
+  <input name="start_date" type="date" required value="{{ project.start_date if project else '' }}">
+
+  <label>End Date (optional)</label>
+  <input name="end_date" type="date" value="{{ project.end_date if project else '' }}">
+
+  <label>Status</label>
+  <input name="status" value="{{ project.status if project else 'Active' }}">
+
+  {% if mode=='edit' %}
+    <label>Active?</label>
+    <select name="is_active">
+      <option value="1" {% if project.is_active==1 %}selected{% endif %}>Yes</option>
+      <option value="0" {% if project.is_active==0 %}selected{% endif %}>No</option>
+    </select>
+  {% endif %}
+
+  <div style="margin-top:16px;">
+    <button type="submit">{{ 'Create' if mode=='add' else 'Save Changes' }}</button>
+  </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PM - {{ 'Add' if mode=='add' else 'Edit' }} Client</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    label { display:block; margin-top:10px; }
+    input { width: 380px; padding: 6px; }
+    .msg { padding: 10px; margin: 10px 0; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+<h1>PM: {{ 'Add' if mode=='add' else 'Edit' }} Client</h1>
+<p><a href="{{ url_for('pm_clients_list') }}">← Back to Clients</a></p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="msg">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<form method="post">
+  <label>Client Name</label>
+  <input name="client_name" required value="{{ client.client_name if client else '' }}">
+
+  <label>Contact Name</label>
+  <input name="contact_name" value="{{ client.contact_name if client else '' }}">
+
+  <label>Contact Email</label>
+  <input name="contact_email" type="email" value="{{ client.contact_email if client else '' }}">
+
+  <label>Contact Phone</label>
+  <input name="contact_phone" value="{{ client.contact_phone if client else '' }}">
+
+  {% if mode=='edit' %}
+    <label>Active?</label>
+    <select name="is_active">
+      <option value="1" {% if client.is_active==1 %}selected{% endif %}>Yes</option>
+      <option value="0" {% if client.is_active==0 %}selected{% endif %}>No</option>
+    </select>
+  {% endif %}
+
+  <div style="margin-top:16px;">
+    <button type="submit">{{ 'Create' if mode=='add' else 'Save Changes' }}</button>
+  </div>
+</form>
+</body>
+</html>
